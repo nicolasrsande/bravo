@@ -33,3 +33,4 @@ bin/bravo-certs/
 .ruby-version
 Gemfile.lock
 spec/fixtures/certs
+vendor/

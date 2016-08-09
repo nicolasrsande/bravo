@@ -47,9 +47,9 @@ date_to: #{ date_to.inspect }, invoice_type: #{ invoice_type }>}
         raise(NullOrInvalidAttribute.new, "invoice debe ser del tipo Bravo::Bill::Invoice")
       end
 
-      if Bravo::IVA_CONDITION[Bravo.own_iva_cond][invoice.iva_condition][invoice_type] != bill_type_wsfe
-        raise(NullOrInvalidAttribute.new, "The invoice doesn't correspond to this bill type")
-      end
+      # if Bravo::IVA_CONDITION[Bravo.own_iva_cond][invoice.iva_condition][invoice_type] != bill_type_wsfe
+      #   raise(NullOrInvalidAttribute.new, "The invoice doesn't correspond to this bill type")
+      # end
 
       @batch << invoice if invoice.validate_invoice_attributes
     end
