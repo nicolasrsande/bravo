@@ -23,7 +23,7 @@ module Bravo
     def self.build_tra
       now = Time.now - 120
       @from = now.strftime('%FT%T%:z')
-      @to = (now + ((12 * 60 * 60))).strftime('%FT%T%:z')
+      @to = (now + (1 * 60 * 60)).strftime('%FT%T%:z')
       @id = now.strftime('%s')
       tra = <<-EOF
 <?xml version="1.0" encoding="UTF-8"?>

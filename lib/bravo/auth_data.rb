@@ -13,6 +13,11 @@ module Bravo
         raise "Archivo de llave privada no encontrado en #{Bravo.pkey}" unless File.exist?(Bravo.pkey)
         raise "Archivo certificado no encontrado en #{Bravo.cert}" unless File.exist?(Bravo.cert)
 
+        # Login to the web service. This generates a YAML file with the login
+        # token and sign.
+        # FIXME: the token lasts for 12 hours, so having one file per day is
+        # going to cause authentication failures if we try to login 12 hours
+        # later in the same day.
         Bravo::Wsaa.login unless File.exist?(todays_data_file_name)
 
         YAML.load_file(todays_data_file_name).each do |k, v|
@@ -26,7 +31,8 @@ module Bravo
       # @return [Hash]
       #
       def auth_hash
-        fetch unless Bravo.constants.include?(:TOKEN) && Bravo.constants.include?(:SIGN)
+        fetch unless Bravo.constants.include?(:TOKEN) &&
+                     Bravo.constants.include?(:SIGN)
         { 'Token' => Bravo::TOKEN, 'Sign' => Bravo::SIGN, 'Cuit' => Bravo.cuit }
       end
 
@@ -50,11 +56,11 @@ module Bravo
       # @return [String]
       #
       def todays_data_file_name
-        @todays_data_file ||= "/tmp/bravo_#{ Bravo.cuit }_#{ Time.new.strftime('%Y_%m_%d') }.yml"
+        "/tmp/bravo_#{Bravo.cuit}_#{Time.new.strftime('%Y_%m_%d')}.yml"
       end
 
       def check_environment!
-        raise 'Environment not set.' unless Bravo::URLS.keys.include? environment
+        raise 'Environment not set' unless Bravo::URLS.keys.include? environment
       end
     end
   end
