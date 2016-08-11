@@ -20,10 +20,9 @@ module Bravo
         # later in the same day.
         Bravo::Wsaa.login unless File.exist?(todays_data_file_name)
 
+        # Set the values for Bravo::TOKEN and Bravo::SIGN
         YAML.load_file(todays_data_file_name).each do |k, v|
-          const = k.to_s.upcase
-          Bravo.remove_const(const) if Bravo.const_defined?(const)
-          Bravo.const_set(const, v)
+          Bravo.reload_const(k.to_s.upcase, v)
         end
       end
 

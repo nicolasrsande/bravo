@@ -74,5 +74,10 @@ module Bravo
               "El valor de  own_iva_cond: (#{iva_cond_symbol}) es inválido.")
       end
     end
+
+    def reload_const(const, value)
+      remove_const(const) if const_defined?(const)
+      const_set(const, value)
+    end
   end
 end
