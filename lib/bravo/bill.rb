@@ -110,6 +110,10 @@ date_to: #{ date_to.inspect }, invoice_type: #{ invoice_type }>}
       # TODO: turn this into an all-purpose Response class
       result          = response[:fecae_solicitar_response][:fecae_solicitar_result]
 
+      unless result[:errors].blank?
+        raise AfipError, "#{result[:errors][:err][:code]} - #{result[:errors][:err][:msg]}"
+      end
+
       response_header = result[:fe_cab_resp]
       response_detail = result[:fe_det_resp][:fecae_det_response]
 

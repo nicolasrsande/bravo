@@ -5,6 +5,7 @@ require 'bravo/constants'
 require 'savon'
 require 'bravo/core_ext/hash'
 require 'bravo/core_ext/string'
+require 'bravo/exceptions'
 
 module Bravo
   # Exception Class for missing or invalid attributes

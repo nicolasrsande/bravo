@@ -1,9 +1,11 @@
 # Bravo
-![Travis status](https://travis-ci.org/leanucci/bravo.png)
-[![Gem Version](https://badge.fury.io/rb/bravo.png)](http://badge.fury.io/rb/bravo)
-[![Code Climate](https://codeclimate.com/repos/5292a01e89af7e473304513a/badges/4a29fbaff3d74a23e634/gpa.png)](https://codeclimate.com/repos/5292a01e89af7e473304513a/feed)
+![Travis status](https://travis-ci.org/xguz/bravo.png)
+
+ Por ahora idéntica a leanucci/bravo, solo he modificado el ejemplo de este Readme, que fallaba debido a que faltaba el campo document_number / DocNro.
+
 
 Bravo permite la obtenci&oacute;n del C.A.E. (C&oacute;digo de Autorizaci&oacute;n Electr&oacute;nico) por medio del Web Service de Facturaci&oacute;n Electr&oacute;nica provisto por AFIP.
+
 
 ## Requisitos
 

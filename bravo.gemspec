@@ -6,11 +6,11 @@ require 'bravo/version'
 Gem::Specification.new do |gem|
   gem.name          = "bravo"
   gem.version       = Bravo::VERSION
-  gem.authors       = ["Leandro Marcucci"]
-  gem.email         = ["leanucci@gmail.com"]
+  gem.authors       = ["Leandro Marcucci","Maximiliano Guzman"]
+  gem.email         = ["leanucci@gmail.com","maximiliano.guzman@gmail.com"]
   gem.description   = 'Adaptador para el Web Service de Facturacion Electrónica de AFIP'
   gem.summary       = 'Adaptador WSFE'
-  gem.homepage      = "https://github.com/leanucci/bravo#readme"
+  gem.homepage      = "https://github.com/xguz/bravo#readme"
   gem.date          = '2011-03-14'
 
   gem.files         = `git ls-files`.split($RS)
