@@ -6,8 +6,8 @@ require 'bravo/version'
 Gem::Specification.new do |gem|
   gem.name          = "bravo"
   gem.version       = Bravo::VERSION
-  gem.authors       = ["Leandro Marcucci","Maximiliano Guzman"]
-  gem.email         = ["leanucci@gmail.com","maximiliano.guzman@gmail.com"]
+  gem.authors       = ["Leandro Marcucci", "Maximiliano Guzman", "Luis Lezcano Airaldi"]
+  gem.email         = ["leanucci@gmail.com", "maximiliano.guzman@gmail.com", "luislezcair@gmail.com"]
   gem.description   = 'Adaptador para el Web Service de Facturacion Electrónica de AFIP'
   gem.summary       = 'Adaptador WSFE'
   gem.homepage      = "https://github.com/xguz/bravo#readme"
@@ -19,8 +19,8 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = %w[lib bin]
 
-  gem.add_runtime_dependency(%{savon}, ["~> 2.9.0"])
-  gem.add_runtime_dependency(%{thor}, ["~> 0.19.0"])
+  gem.add_runtime_dependency(%{savon}, ["~> 2.11.0"])
+  gem.add_runtime_dependency(%{thor}, ["~> 0.19.1"])
 
   gem.add_development_dependency(%{rspec}, ["~> 2.14.0"])
   gem.add_development_dependency(%{rspec-mocks}, ["~> 2.14.0"])
@@ -28,5 +28,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency(%{vcr}, ["~> 2.4.0"])
   gem.add_development_dependency(%{simplecov}, ["~> 0.7.0"])
   gem.add_development_dependency(%{fakeweb}, ["~> 1.3.0"])
-  gem.add_development_dependency(%{rubocop}, ["~> 0.26.1"])
+  gem.add_development_dependency(%{rubocop}, ["~> 0.44.1"])
 end

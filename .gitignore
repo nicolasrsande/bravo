@@ -34,3 +34,4 @@ bin/bravo-certs/
 Gemfile.lock
 spec/fixtures/certs
 vendor/
+tags/
