@@ -79,8 +79,18 @@ XML
         #{ Bravo::AuthData.wsaa_url }`
 
       response = CGI.unescapeHTML(response)
-      token = response.scan(%r{\<token\>(.+)\<\/token\>}).first.first
-      sign  = response.scan(%r{\<sign\>(.+)\<\/sign\>}).first.first
+
+      # If response is empty it might be due to a connection error.
+      raise SocketError if response.empty?
+
+      errors = scan(response, 'faultcode')
+      error_msgs = scan(response, 'faultstring')
+
+      raise WSAAError, "#{errors.first}: #{error_msgs.first}" if errors
+
+      token = scan(response, 'token').first
+      sign = scan(response, 'sign').first
+
       [token, sign]
     end
 
@@ -93,6 +103,11 @@ sign: #{certs[1]}
 YML
       `echo '#{yml}' > \
         /tmp/bravo_#{Bravo.cuit}_#{Time.new.strftime('%Y_%m_%d')}.yml`
+    end
+
+    def self.scan(msg, tag)
+      quoted = Regexp.quote(tag)
+      msg.scan(%r{\<#{quoted}\>(.+)\<\/#{quoted}\>}).first
     end
   end
 end
