@@ -164,7 +164,7 @@ date_to: #{ date_to.inspect }, invoice_type: #{ invoice_type }>}
       detail['DocNro']    = invoice.document_number
       detail['ImpNeto']   = invoice.net_amount
       detail['ImpIVA']    = invoice.iva_sum
-      detail['ImpTotal']  = invoice.total
+      detail['ImpTotal']  = (invoice.total + invoice.exempt_amount).round(2)
       detail['CbteDesde'] = detail['CbteHasta'] = cbte
       detail['Concepto']  = Bravo::CONCEPTOS[invoice.concept],
       detail['DocTipo']   = Bravo::DOCUMENTOS[invoice.document_type],
@@ -179,7 +179,7 @@ date_to: #{ date_to.inspect }, invoice_type: #{ invoice_type }>}
       detail['CbteFch']     = today
       detail['ImpTotConc']  = 0.00
       detail['MonCotiz']    = 1
-      detail['ImpOpEx']     = 0.00
+      detail['ImpOpEx']     = invoice.exempt_amount
       detail['ImpTrib']     = 0.00
 
       unless invoice.concept == 0
@@ -206,6 +206,8 @@ date_to: #{ date_to.inspect }, invoice_type: #{ invoice_type }>}
         @currency        = attrs[:currency]       || Bravo.default_moneda
         @concept         = attrs[:concept]        || Bravo.default_concepto
         @document_number = attrs[:document_number]
+        @exempt_amount   = attrs[:exempt_amount] &&
+                           attrs[:exempt_amount].round(2) || 0.0
       end
 
       # Calculates the net amount for the invoice by substracting the iva from
