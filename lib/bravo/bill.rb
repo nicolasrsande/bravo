@@ -162,23 +162,28 @@ date_to: #{ date_to.inspect }, invoice_type: #{ invoice_type }>}
     def setup_invoice_structure(invoice, cbte)
       detail = {}
       detail['DocNro']    = invoice.document_number
-      detail['ImpNeto']   = invoice.net_amount
-      detail['ImpIVA']    = invoice.iva_sum
-      detail['ImpTotal']  = (invoice.total + invoice.exempt_amount).round(2)
       detail['CbteDesde'] = detail['CbteHasta'] = cbte
       detail['Concepto']  = Bravo::CONCEPTOS[invoice.concept],
       detail['DocTipo']   = Bravo::DOCUMENTOS[invoice.document_type],
       detail['MonId']     = Bravo::MONEDAS[invoice.currency][:codigo],
-      detail['Iva'] = {
-        'AlicIva' => {
-          'Id' => invoice.applicable_iva_code,
-          'BaseImp' => invoice.net_amount,
-          'Importe' => invoice.iva_sum
-        }
-      }
       detail['CbteFch']     = today
-      detail['ImpTotConc']  = 0.00
       detail['MonCotiz']    = 1
+
+      detail['ImpNeto']   = invoice.net_amount
+      detail['ImpIVA']    = invoice.iva_sum
+      detail['ImpTotal']  = (invoice.total + invoice.exempt_amount).round(2)
+
+      unless invoice.total.zero?
+        detail['Iva'] = {
+          'AlicIva' => {
+            'Id' => invoice.applicable_iva_code,
+            'BaseImp' => invoice.net_amount,
+            'Importe' => invoice.iva_sum
+          }
+        }
+      end
+
+      detail['ImpTotConc']  = 0.00
       detail['ImpOpEx']     = invoice.exempt_amount
       detail['ImpTrib']     = 0.00
 
