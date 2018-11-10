@@ -29,8 +29,9 @@ module Bravo
       # @return [Hash]
       #
       def auth_hash
-        fetch unless include_token_and_sign? && !access_ticket_expired?
-        { 'Token' => Bravo::TOKEN, 'Sign' => Bravo::SIGN, 'Cuit' => Bravo.cuit }
+        fetch #unless include_token_and_sign? && !access_ticket_expired?
+        #{ 'Token' => Bravo::TOKEN, 'Sign' => Bravo::SIGN, 'Cuit' => Bravo.cuit }
+        # CHANGE ALWAYS FETCH FROM FILE #
       end
 
       def include_token_and_sign?
