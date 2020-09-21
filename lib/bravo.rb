@@ -75,17 +75,9 @@ module Bravo
               "El valor de  own_iva_cond: (#{iva_cond_symbol}) es inválido.")
       end
     end
-    
+
     def data_class=(dclass)
       @data_class = dclass.constantize
-    end
-    
-    def pkey
-      if enable_multitenantcy
-        data_class.send(@pkey)
-      else
-        @pkey
-      end
     end
 
     def cert
@@ -96,6 +88,62 @@ module Bravo
       end
     end
 
+    def pkey
+      if enable_multitenantcy
+        data_class.send(@pkey)
+      else
+        @pkey
+      end
+    end
+
+    def default_documento
+      if enable_multitenantcy
+        data_class.send(@default_documento)
+      else
+        @default_documento
+      end
+    end
+
+    def default_concepto
+      if enable_multitenantcy
+        data_class.send(@default_concepto)
+      else
+        @default_concepto
+      end
+    end
+
+    def cuit
+      if enable_multitenantcy
+        data_class.send(@cuit)
+      else
+        @cuit
+      end
+    end
+
+    def sale_point
+      if enable_multitenantcy
+        data_class.send(@sale_point)
+      else
+        @sale_point
+      end
+    end
+
+    def default_moneda
+      if enable_multitenantcy
+        data_class.send(@default_moneda)
+      else
+        @default_moneda
+      end
+    end
+
+    def own_iva_cond
+      if enable_multitenantcy
+        data_class.send(@own_iva_cond)
+      else
+        @own_iva_cond
+      end
+    end
+    
     def reload_const(const, value)
       remove_const(const) if const_defined?(const)
       const_set(const, value)
