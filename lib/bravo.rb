@@ -80,19 +80,19 @@ module Bravo
       @data_class = dclass.constantize
     end
     
-    def pkey=(val)
+    def pkey
       if enable_multitenantcy
-        data_class.send(val)
+        data_class.send(@pkey)
       else
-        @pkey = val
+        @pkey
       end
     end
 
-    def cert(val)
+    def cert
       if enable_multitenantcy
-        data_class.send(val)
+        data_class.send(@cert)
       else
-        @pkey = val
+        @cert
       end
     end
 
