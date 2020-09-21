@@ -13,7 +13,7 @@ module Bravo
   #
   class NullOrInvalidAttribute < StandardError; end
 
-  # Exception Class for missing or invalid certifficate
+  # Exception Class for missing or invalid certificate
   #
   class MissingCertificate < StandardError; end
 
