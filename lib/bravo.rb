@@ -44,7 +44,8 @@ module Bravo
   extend self
 
   attr_accessor :cuit, :sale_point, :default_documento, :pkey, :cert,
-                :default_concepto, :default_moneda, :own_iva_cond, :openssl_bin
+                :default_concepto, :default_moneda, :own_iva_cond, :openssl_bin,
+                :data_class, :enable_multitenantcy
 
   class << self
     # Receiver of the logging configuration options.
@@ -61,7 +62,7 @@ module Bravo
       @logger ||= Logger.new
     end
 
-    # Returs the formatted logger options to be used by Savon.
+    # Returns the formatted logger options to be used by Savon.
     def logger_options
       logger.logger_options
     end
@@ -72,6 +73,26 @@ module Bravo
       else
         raise(NullOrInvalidAttribute.new,
               "El valor de  own_iva_cond: (#{iva_cond_symbol}) es inválido.")
+      end
+    end
+    
+    def data_class=(dclass)
+      @data_class = dclass.constantize
+    end
+    
+    def pkey=(val)
+      if enable_multitenantcy
+        data_class.send(val)
+      else
+        @pkey = val
+      end
+    end
+
+    def cert(val)
+      if enable_multitenantcy
+        data_class.send(val)
+      else
+        @pkey = val
       end
     end
 
