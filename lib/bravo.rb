@@ -67,15 +67,6 @@ module Bravo
       logger.logger_options
     end
 
-    def own_iva_cond=(iva_cond_symbol)
-      if Bravo::IVA_CONDITION.key?(iva_cond_symbol)
-        @own_iva_cond = iva_cond_symbol
-      else
-        raise(NullOrInvalidAttribute.new,
-              "El valor de  own_iva_cond: (#{iva_cond_symbol}) es inválido.")
-      end
-    end
-
     def data_class=(dclass)
       @data_class = dclass.constantize
     end
@@ -140,7 +131,12 @@ module Bravo
       if enable_multitenantcy
         data_class.send(@own_iva_cond)
       else
-        @own_iva_cond
+        if Bravo::IVA_CONDITION.key?(@own_iva_cond)
+          @own_iva_cond
+        else
+          raise(NullOrInvalidAttribute.new,
+                "El valor de  own_iva_cond: (#{iva_cond_symbol}) es inválido.")
+        end
       end
     end
     
