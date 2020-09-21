@@ -4,7 +4,6 @@ module Bravo
   # valid key and signature that will last for a day.
   #
   class Wsaa
-    TA_EXPIRATION_TIME = 43200 # 12 hours
     # Main method for authentication and authorization.
     # When successful, produces the yaml file with auth data.
     #
@@ -22,46 +21,46 @@ module Bravo
     #
     # rubocop:disable Metrics/MethodLength
     def self.build_tra
-      now = (Time.now) - 120
+      now = Time.now - 120
       @from = now.strftime('%FT%T%:z')
-      @to   = (now + TA_EXPIRATION_TIME).strftime('%FT%T%:z')
-      @id   = now.strftime('%s')
-      tra  = <<-EOF
+      @to = (now + (1 * 60 * 60)).strftime('%FT%T%:z')
+      @id = now.strftime('%s')
+      tra = <<-EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <loginTicketRequest version="1.0">
   <header>
-    <uniqueId>#{ @id }</uniqueId>
-    <generationTime>#{ @from }</generationTime>
-    <expirationTime>#{ @to }</expirationTime>
+    <uniqueId>#{@id}</uniqueId>
+    <generationTime>#{@from}</generationTime>
+    <expirationTime>#{@to}</expirationTime>
   </header>
   <service>wsfe</service>
 </loginTicketRequest>
 EOF
       tra
     end
+
     # rubocop:enable Metrics/MethodLength
     # Builds the CMS
     # @return [String] cms
     #
     def self.build_cms(tra)
-      `echo '#{ tra }' |
-        #{ Bravo.openssl_bin } cms -sign -in /dev/stdin -signer #{ Bravo.cert } -inkey #{ Bravo.pkey } \
-        -nodetach -outform der |
-        #{ Bravo.openssl_bin } base64 -e`
+      `echo '#{tra}' |
+        #{Bravo.openssl_bin} cms -sign -in /dev/stdin -signer #{Bravo.cert} \
+        -inkey #{Bravo.pkey} -nodetach -outform der |
+        #{Bravo.openssl_bin} base64 -e`
     end
 
     # Builds the CMS request to log in to the server
     # @return [String] the cms body
     #
     def self.build_request(cms)
-      # rubocop:disable Metrics/LineLength
       request = <<-XML
 <?xml version="1.0" encoding="UTF-8"?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://wsaa.view.sua.dvadac.desein.afip.gov">
   <SOAP-ENV:Body>
     <ns1:loginCms>
       <ns1:in0>
-#{ cms }
+#{cms}
       </ns1:in0>
     </ns1:loginCms>
   </SOAP-ENV:Body>
@@ -76,11 +75,22 @@ XML
     #
     def self.call_wsaa(req)
       response = `echo '#{ req }' |
-        curl -k -s -H 'Content-Type: application/soap+xml; action=""' -d @- #{ Bravo::AuthData.wsaa_url }`
+        curl -k -s -H 'Content-Type: application/soap+xml; action=""' -d @- \
+        #{ Bravo::AuthData.wsaa_url }`
 
-      response = CGI::unescapeHTML(response)
-      token = response.scan(%r{\<token\>(.+)\<\/token\>}).first.first
-      sign  = response.scan(%r{\<sign\>(.+)\<\/sign\>}).first.first
+      response = CGI.unescapeHTML(response)
+
+      # If response is empty it might be due to a connection error.
+      raise SocketError if response.empty?
+
+      errors = scan(response, 'faultcode')
+      error_msgs = scan(response, 'faultstring')
+
+      raise WSAAError, "#{errors.first}: #{error_msgs.first}" if errors
+
+      token = scan(response, 'token').first
+      sign = scan(response, 'sign').first
+
       [token, sign]
     end
 
@@ -90,10 +100,14 @@ XML
       yml = <<-YML
 token: #{certs[0]}
 sign: #{certs[1]}
-expire_at: #{Time.new + TA_EXPIRATION_TIME}
 YML
-      `echo '#{ yml }' > /tmp/bravo_#{ Bravo.cuit }_#{ Time.new.strftime('%Y_%m_%d') }.yml`
+      `echo '#{yml}' > \
+        /tmp/bravo_#{Bravo.cuit}_#{Time.new.strftime('%Y_%m_%d')}.yml`
     end
 
+    def self.scan(msg, tag)
+      quoted = Regexp.quote(tag)
+      msg.scan(%r{\<#{quoted}\>(.+)\<\/#{quoted}\>}).first
+    end
   end
 end

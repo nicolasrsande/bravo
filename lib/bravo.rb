@@ -8,7 +8,6 @@ require 'bravo/core_ext/string'
 require 'bravo/exceptions'
 
 module Bravo
-
   # Exception Class for missing or invalid attributes
   #
   class NullOrInvalidAttribute < StandardError; end
@@ -44,19 +43,19 @@ module Bravo
 
   extend self
 
-  attr_accessor :cuit, :sale_point, :default_documento, :pkey, :cert, :default_concepto, :default_moneda,
-    :own_iva_cond, :openssl_bin
+  attr_accessor :cuit, :sale_point, :default_documento, :pkey, :cert,
+                :default_concepto, :default_moneda, :own_iva_cond, :openssl_bin
 
   class << self
     # Receiver of the logging configuration options.
-    # @param opts [Hash] pass a hash with `log`, `pretty_xml` and `level` keys to set
-    # them.
+    # @param opts [Hash] pass a hash with `log`, `pretty_xml` and `level` keys
+    # to set them.
     def logger=(opts)
       @logger ||= Logger.new(opts)
     end
 
-    # Sets the logger options to the default values or returns the previously set
-    # logger options
+    # Sets the logger options to the default values or returns the previously
+    # set logger options
     # @return [Logger]
     def logger
       @logger ||= Logger.new
@@ -71,8 +70,14 @@ module Bravo
       if Bravo::IVA_CONDITION.key?(iva_cond_symbol)
         @own_iva_cond = iva_cond_symbol
       else
-        raise(NullOrInvalidAttribute.new, "El valor de  own_iva_cond: (#{ iva_cond_symbol }) es inválido.")
+        raise(NullOrInvalidAttribute.new,
+              "El valor de  own_iva_cond: (#{iva_cond_symbol}) es inválido.")
       end
+    end
+
+    def reload_const(const, value)
+      remove_const(const) if const_defined?(const)
+      const_set(const, value)
     end
   end
 end

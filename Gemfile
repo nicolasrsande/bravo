@@ -6,4 +6,9 @@ group :test do
   gem 'byebug'
 end
 
+group :development do
+  gem 'pry'
+  gem 'pry-byebug'
+end
+
 gemspec

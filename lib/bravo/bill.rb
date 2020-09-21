@@ -47,9 +47,9 @@ date_to: #{ date_to.inspect }, invoice_type: #{ invoice_type }>}
         raise(NullOrInvalidAttribute.new, "invoice debe ser del tipo Bravo::Bill::Invoice")
       end
 
-      if Bravo::IVA_CONDITION[Bravo.own_iva_cond][invoice.iva_condition][invoice_type] != bill_type_wsfe
-        raise(NullOrInvalidAttribute.new, "The invoice doesn't correspond to this bill type")
-      end
+      # if Bravo::IVA_CONDITION[Bravo.own_iva_cond][invoice.iva_condition][invoice_type] != bill_type_wsfe
+      #   raise(NullOrInvalidAttribute.new, "The invoice doesn't correspond to this bill type")
+      # end
 
       @batch << invoice if invoice.validate_invoice_attributes
     end
@@ -162,25 +162,31 @@ date_to: #{ date_to.inspect }, invoice_type: #{ invoice_type }>}
     def setup_invoice_structure(invoice, cbte)
       detail = {}
       detail['DocNro']    = invoice.document_number
-      detail['ImpNeto']   = invoice.net_amount
-      detail['ImpIVA']    = invoice.iva_sum
-      detail['ImpTotal']  = invoice.total
       detail['CbteDesde'] = detail['CbteHasta'] = cbte
       detail['Concepto']  = Bravo::CONCEPTOS[invoice.concept],
       detail['DocTipo']   = Bravo::DOCUMENTOS[invoice.document_type],
       detail['MonId']     = Bravo::MONEDAS[invoice.currency][:codigo],
-      detail['Iva'] = {
-        'AlicIva' => {
-          'Id' => invoice.applicable_iva_code,
-          'BaseImp' => invoice.net_amount,
-          'Importe' => invoice.iva_sum
-        }
-      }
       detail['CbteFch']     = today
-      detail['ImpTotConc']  = 0.00
       detail['MonCotiz']    = 1
-      detail['ImpOpEx']     = 0.00
+
+      detail['ImpNeto']   = invoice.net_amount
+      detail['ImpIVA']    = invoice.iva_sum
+      detail['ImpTotal']  = (invoice.total + invoice.exempt_amount).round(2)
+
+      unless invoice.total.zero?
+        detail['Iva'] = {
+          'AlicIva' => {
+            'Id' => invoice.applicable_iva_code,
+            'BaseImp' => invoice.net_amount,
+            'Importe' => invoice.iva_sum
+          }
+        }
+      end
+
+      detail['ImpTotConc']  = 0.00
+      detail['ImpOpEx']     = invoice.exempt_amount
       detail['ImpTrib']     = 0.00
+
       unless invoice.concept == 0
         detail.merge!('FchServDesde'  => date_from  || today,
                       'FchServHasta'  => date_to    || today,
@@ -193,16 +199,20 @@ date_to: #{ date_to.inspect }, invoice_type: #{ invoice_type }>}
     end
 
     class Invoice
-      attr_accessor :total, :document_type, :document_number, :due_date, :aliciva_id, :date_from, :date_to,
-        :iva_condition, :concept, :currency
+      attr_accessor :total, :document_type, :document_number, :due_date,
+                    :aliciva_id, :date_from, :date_to, :iva_condition, :concept,
+                    :currency, :exempt_amount
 
       def initialize(attrs = {})
-        @iva_condition  = validate_iva_condition(attrs[:iva_condition])
-        @iva_type       = validate_iva_type(attrs[:iva_type])
-        @total          = attrs[:total].round(2)|| 0.0
-        @document_type  = attrs[:document_type] || Bravo.default_documento
-        @currency       = attrs[:currency]      || Bravo.default_moneda
-        @concept        = attrs[:concept]       || Bravo.default_concepto
+        @iva_condition   = validate_iva_condition(attrs[:iva_condition])
+        @iva_type        = validate_iva_type(attrs[:iva_type])
+        @total           = attrs[:total].round(2) || 0.0
+        @document_type   = attrs[:document_type]  || Bravo.default_documento
+        @currency        = attrs[:currency]       || Bravo.default_moneda
+        @concept         = attrs[:concept]        || Bravo.default_concepto
+        @document_number = attrs[:document_number]
+        @exempt_amount   = attrs[:exempt_amount] &&
+                           attrs[:exempt_amount].round(2) || 0.0
       end
 
       # Calculates the net amount for the invoice by substracting the iva from
