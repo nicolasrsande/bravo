@@ -204,7 +204,7 @@ date_to: #{date_to.inspect}, invoice_type: #{invoice_type}>)
 
       def initialize(attrs = {})
         @iva_condition   = validate_iva_condition(attrs[:iva_condition])
-        @total_gravado   = attrs[:total].round(2) || 0.0
+        @total_gravado   = attrs[:total_gravado].round(2) || 0.0
         @document_type   = attrs[:document_type]  || Bravo.default_documento
         @currency        = attrs[:currency]       || Bravo.default_moneda
         @concept         = attrs[:concept]        || Bravo.default_concepto
