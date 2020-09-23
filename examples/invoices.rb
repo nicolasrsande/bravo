@@ -18,11 +18,13 @@ puts 'Issuing a Factura A for 1000 ARS to a Responsable Inscripto '\
 
 bill_a = Bravo::Bill.new(bill_type: :bill_a, invoice_type: :invoice)
 
-invoice = Bravo::Bill::Invoice.new(total: 1000.0,
+invoice = Bravo::Bill::Invoice.new(total_gravado: 4400.0,
+                                   invoice_number: 4534,
                                    document_type: 'CUIT',
                                    document_number: '30711543267',
                                    iva_condition: :responsable_inscripto,
-                                   iva_type: :iva_10)
+                                   iva_detail: [{"Id"=>6, "BaseImp"=>3619.91, "Importe"=>380.09 },
+                                                {"Id"=>4, "BaseImp"=>3619.91, "Importe"=>380.09 }])
 
 bill_a.set_new_invoice(invoice)
 
