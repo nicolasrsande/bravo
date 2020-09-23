@@ -128,15 +128,10 @@ module Bravo
     end
 
     def own_iva_cond
-      if Bravo::IVA_CONDITION.key?(@own_iva_cond)
-        if enable_multitenantcy
-          data_class.send(@own_iva_cond)
-        else
-          @own_iva_cond
-        end
+      if enable_multitenantcy
+        data_class.send(@own_iva_cond)
       else
-        raise(NullOrInvalidAttribute.new,
-              "El valor de  own_iva_cond es inválido.")
+        @own_iva_cond
       end
     end
 
