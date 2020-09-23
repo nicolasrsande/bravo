@@ -136,7 +136,7 @@ module Bravo
         end
       else
         raise(NullOrInvalidAttribute.new,
-              "El valor de  own_iva_cond: (#{iva_cond_symbol}) es inválido.")
+              "El valor de  own_iva_cond es inválido.")
       end
     end
 
