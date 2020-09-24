@@ -13,7 +13,7 @@ module Bravo
                   :invoice_type, :batch
 
     def initialize(attrs = {})
-      opts = { wsdl: Bravo::AuthData.wsfe_url, ssl_version: :TLSv1 }.merge! Bravo.logger_options
+      opts = { wsdl: Bravo::AuthData.wsfe_url, ssl_version: :TLSv1_2 }.merge! Bravo.logger_options
       @client       ||= Savon.client(opts)
       @body           = { 'Auth' => Bravo::AuthData.auth_hash }
       @bill_type      = validate_bill_type(attrs[:bill_type])
