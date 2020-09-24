@@ -188,7 +188,6 @@ date_to: #{date_to.inspect}, invoice_type: #{invoice_type}>)
       detail.merge!('FchServDesde'  => date_from  || today,
                     'FchServHasta'  => date_to    || today,
                     'FchVtoPago'    => due_date   || today)
-      end
     end
 
     def today
