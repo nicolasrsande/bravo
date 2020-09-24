@@ -44,10 +44,10 @@ EOF
     # @return [String] cms
     #
     def self.build_cms(tra)
-      `echo '#{tra}' |
-        #{Bravo.openssl_bin} cms -sign -in /dev/stdin -signer #{Bravo.cert} \
-        -inkey #{Bravo.pkey} -nodetach -outform der |
-        #{Bravo.openssl_bin} base64 -e`
+      `echo '#{ tra }' |
+        #{ Bravo.openssl_bin } cms -sign -in /dev/stdin -signer #{ Bravo.cert } -inkey #{ Bravo.pkey } \
+        -nodetach -outform der |
+        #{ Bravo.openssl_bin } base64 -e`
     end
 
     # Builds the CMS request to log in to the server
