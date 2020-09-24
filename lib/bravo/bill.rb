@@ -169,13 +169,13 @@ date_to: #{date_to.inspect}, invoice_type: #{invoice_type}>)
       detail['Concepto']  = Bravo::CONCEPTOS[invoice.concept]
       detail['DocTipo']   = Bravo::DOCUMENTOS[invoice.document_type]
       detail['MonId']     = Bravo::MONEDAS[invoice.currency][:codigo]
-      detail['CbteFch']     = today
-      detail['MonCotiz']    = 1
+      detail['CbteFch']   = today
+      detail['MonCotiz']  = 1
       detail['ImpNeto']   = invoice.net_amount
       detail['ImpIVA']    = invoice.iva_sum
       detail['ImpTotal']  = invoice.total_final
 
-      unless invoice.total.zero?
+      unless invoice.total_gravado.zero?
         invoice.iva_detail.each do |alic_iva|
           detail['Iva'] = { 'AlicIva' => alic_iva }
         end
