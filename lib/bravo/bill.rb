@@ -211,7 +211,8 @@ date_to: #{date_to.inspect}, invoice_type: #{invoice_type}>)
         @document_number = attrs[:document_number]
         @exempt_amount   = attrs[:exempt_amount] &&
                            attrs[:exempt_amount].round(2) || 0.0
-        @other_taxes     = attrs[:other_taxes].round(2) || 0.0
+        @other_taxes     = attrs[:other_taxes] &&
+                           attrs[:other_taxes].round(2) || 0.0
         @iva_detail      = attrs[:iva_detail]
         @invoice_number  = attrs[:invoice_number]
       end
