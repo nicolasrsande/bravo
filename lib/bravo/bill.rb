@@ -185,10 +185,9 @@ date_to: #{date_to.inspect}, invoice_type: #{invoice_type}>)
       detail['ImpOpEx']     = invoice.exempt_amount
       detail['ImpTrib']     = invoice.other_taxes
 
-      unless invoice.concept.zero?
-        detail.merge!('FchServDesde'  => date_from  || today,
-                      'FchServHasta'  => date_to    || today,
-                      'FchVtoPago'    => due_date   || today)
+      detail.merge!('FchServDesde'  => date_from  || today,
+                    'FchServHasta'  => date_to    || today,
+                    'FchVtoPago'    => due_date   || today)
       end
     end
 
