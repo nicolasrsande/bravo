@@ -167,7 +167,7 @@ date_to: #{date_to.inspect}, invoice_type: #{invoice_type}>)
       detail['DocNro']    = invoice.document_number
       detail['CbteDesde'] = detail['CbteHasta'] = invoice.invoice_number > 0 ? invoice.invoice_number : cbte
       detail['Concepto']  = Bravo::CONCEPTOS[invoice.concept]
-      detail['DocTipo']   = Bravo::DOCUMENTOS[invoice.document_type]
+      detail['DocTipo']   = invoice.document_type
       detail['MonId']     = Bravo::MONEDAS[invoice.currency][:codigo]
       detail['CbteFch']   = today
       detail['MonCotiz']  = 1
